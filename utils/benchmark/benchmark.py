@@ -33,7 +33,7 @@ def execute_script(script_path, iterations=10):
     progress_bar.close()
 
     if durations:
-        print(pd.Series(durations).describe())
+        print(pd.Series(data=durations, name="Durations (ms)").describe())
     else:
         print("\nNo successful executions to compute statistics.")
 
