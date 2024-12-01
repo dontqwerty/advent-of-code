@@ -1,6 +1,7 @@
 #!/bin/bash
 
-# Export the AOC_TOKEN env variable before running this script
+# Export the AOC_TOKEN env variable before running this script and optionally
+# export the AOC_NICKNAME env variable for the user agent
 
 if [ -z $AOC_TOKEN ]; then
     echo "Export the AoC token to AOC_TOKEN env variable first"
@@ -32,6 +33,7 @@ fi
 SOLUTION="$4"
 
 curl -i -s -k -X $'POST' \
+    -H $'User-Agent: '"$AOC_NICKNAME"' manually executed push solution script' \
     -H $'Content-Type: application/x-www-form-urlencoded' \
     -b $'session='"$AOC_TOKEN"'' \
     --data-binary $'level='"$LEVEL"'&answer='"$SOLUTION"'' \
