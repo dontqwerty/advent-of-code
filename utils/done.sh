@@ -20,7 +20,7 @@ push_solution() {
     fi
 
     # Pad single-digit days with a leading zero
-    formatted_day=$(printf "%02d" "$current_day")
+    current_day=$(printf "%d" "$current_day")
 
     # Get level and solution from arguments
     level="$1"
