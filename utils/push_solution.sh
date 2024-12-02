@@ -37,4 +37,4 @@ curl -i -s -k -X $'POST' \
     -H $'Content-Type: application/x-www-form-urlencoded' \
     -b $'session='"$AOC_TOKEN"'' \
     --data-binary $'level='"$LEVEL"'&answer='"$SOLUTION"'' \
-    $'https://adventofcode.com/2023/day/'"$DAY"'/answer'
+    $'https://adventofcode.com/'"$YEAR"'/day/'"$DAY"'/answer'
