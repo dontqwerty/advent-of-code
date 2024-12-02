@@ -7,16 +7,15 @@ from tqdm import tqdm
 
 
 def execute_script(script_path, iterations=10):
-    durations = []
-
     # Change the working directory to the script's directory
     script_directory = os.path.dirname(os.path.abspath(script_path))
     script_name = os.path.basename(script_path)
     os.chdir(script_directory)
 
+    durations_ms = []
     progress_bar = tqdm(total=iterations, desc="Running script")
     for i in range(iterations):
-        start_time = time.time()
+        start_time_ns = time.time_ns()
         try:
             # Execute the script using subprocess
             subprocess.run(
@@ -25,17 +24,17 @@ def execute_script(script_path, iterations=10):
         except subprocess.CalledProcessError as e:
             print(f"Execution failed on iteration {i+1}: {e}")
             continue
-        end_time = time.time()
+        end_time_ns = time.time_ns()
 
-        duration = (end_time - start_time) * 1000
-        durations.append(duration)
+        duration_ms = (end_time_ns - start_time_ns) / 1_000_000
+        durations_ms.append(duration_ms)
         progress_bar.update()
     progress_bar.close()
 
-    if durations:
-        print(pd.Series(data=durations, name="Durations (ms)").describe())
+    if durations_ms:
+        print(pd.Series(data=durations_ms, name="Durations (ms)").describe())
     else:
-        print("\nNo successful executions to compute statistics.")
+        print("No successful executions to compute statistics.")
 
 
 if __name__ == "__main__":
