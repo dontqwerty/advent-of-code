@@ -4,24 +4,26 @@
 setup_advent_of_code() {
     # Get current date components
     current_month=$(date +%m)
-    current_day=$(date +%d)
+    if [ -z $1 ]; then
+        current_day=$(date +%e)
+        current_day=$(printf "%d" "$current_day")
+        current_formatted_day=$(date +%d)
+    else
+        current_day=$1
+        current_formatted_day=$(printf "%02d" "$current_day")
+    fi
+    echo $current_formatted_day
     current_year=$(date +%Y)
 
-    # Check if it's December and between 1st and 24th
     if [[ "$current_month" != "12" || "$current_day" -lt 1 || "$current_day" -gt 24 ]]; then
         echo "Not in Advent of Code period (December 1-24). Exiting."
         return 1
     fi
 
-    # Pad single-digit days with a leading zero
-    current_day=$(printf "%d" "$current_day")
-    formatted_day=$(printf "%02d" "$current_day")
-
     # Create the Advent of Code directory path
     advent_dir="../advent-of-code-${current_year}"
-    day_dir="${advent_dir}/day_${formatted_day}"
+    day_dir="${advent_dir}/day_${current_formatted_day}"
     input_filepath="${day_dir}/input"
-    solution_filepath="${day_dir}/solution.py"
 
     # Create the directory
     mkdir -p "$day_dir"
@@ -32,23 +34,51 @@ setup_advent_of_code() {
         return 1
     fi
 
-    # Create Python script to read input only if it doesn't exist
-    python_script="${day_dir}/solution.py"
-    if [[ ! -f "$python_script" ]]; then
-        cat <<'EOF' >"$python_script"
-with open("input", "r") as f:
-    lines = f.readlines()
-    print(lines[:10])
+    # Create common.py
+    python_script_path="${day_dir}/common.py"
+    if [[ ! -f "$python_script_path" ]]; then
+        cat <<'EOF' >"$python_script_path"
+def parse_input():
+    return open("input").read()
 EOF
-        echo "Created ${solution_filepath}"
+        echo "Created ${python_script_path}"
     else
-        echo "${solution_filepath} already exists. Skipping creation."
+        echo "${python_script_path} already exists. Skipping creation."
+    fi
+
+    # Create one.py
+    python_script_path="${day_dir}/one.py"
+    if [[ ! -f "$python_script_path" ]]; then
+        cat <<'EOF' >"$python_script_path"
+from common import parse_input
+
+myinput = parse_input()
+print(myinput[:5])
+EOF
+        echo "Created ${python_script_path}"
+    else
+        echo "${python_script_path} already exists. Skipping creation."
+    fi
+
+    # Create two.py
+    python_script_path="${day_dir}/two.py"
+    if [[ ! -f "$python_script_path" ]]; then
+        cat <<'EOF' >"$python_script_path"
+from common import parse_input
+
+myinput = parse_input()
+print(myinput[:5])
+EOF
+        echo "Created ${python_script_path}"
+    else
+        echo "${python_script_path} already exists. Skipping creation."
     fi
 
     # Call pull_data function from pull_data.sh
-    echo "Calling pull_data.sh ${current_year} ${current_day} ${input_filepath}"
-    bash pull_data.sh "$current_year" "$current_day" "$input_filepath"
+    if [ -z $2 ]; then
+        echo "Calling pull_data.sh ${current_year} ${current_day} ${input_filepath}"
+        bash pull_data.sh "$current_year" "$current_day" "$input_filepath"
+    fi
 }
 
-# Run the setup function
-setup_advent_of_code
+setup_advent_of_code "$@"

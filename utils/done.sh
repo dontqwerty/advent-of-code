@@ -10,7 +10,9 @@ push_solution() {
 
     # Get current date components
     current_month=$(date +%m)
-    current_day=$(date +%d)
+    current_day=$(date +%e)
+    current_day=$(printf "%d" "$current_day")
+    current_formatted_day=$(date +%d)
     current_year=$(date +%Y)
 
     # Check if it's December and between 1st and 24th
@@ -18,9 +20,6 @@ push_solution() {
         echo "Not in Advent of Code period (December 1-24). Exiting."
         return 1
     fi
-
-    # Pad single-digit days with a leading zero
-    current_day=$(printf "%d" "$current_day")
 
     # Get level and solution from arguments
     level="$1"
